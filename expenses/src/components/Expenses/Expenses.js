@@ -1,8 +1,8 @@
 import { useState } from "react";
 import Card from "../UI/Card";
-import ExpenseItem from "./ExpenseItem";
 import ExpensesFilter from "./ExpensesFilter";
 import "./Expenses.css";
+import ExpensesList from "./ExpensesList";
 
 const Expenses = (props) => {
   // I want to have the state initialized with the actual year
@@ -18,24 +18,13 @@ const Expenses = (props) => {
     return expense.date.getFullYear().toString() === filteredYear;
   });
 
-  let expensesContent = <p>No expenses found.</p>;
-
-  if (filteredExpenses.length > 0) {
-    expensesContent = filteredExpenses.map((expense) => (
-      <ExpenseItem
-        key={expense.id}
-        title={expense.title}
-        amount={expense.amount}
-        date={expense.date}
-      />
-    ));
-  }
-
   return (
-    <Card className="expenses">
-      <ExpensesFilter selected={filteredYear} onFilterChange={filterByYear} />
-      {expensesContent}
-    </Card>
+    <li>
+      <Card className="expenses">
+        <ExpensesFilter selected={filteredYear} onFilterChange={filterByYear} />
+        <ExpensesList expenses={filteredExpenses} />
+      </Card>
+    </li>
   );
 };
 export default Expenses;

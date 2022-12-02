@@ -3,6 +3,7 @@ import Card from "../UI/Card";
 import ExpensesFilter from "./ExpensesFilter";
 import "./Expenses.css";
 import ExpensesList from "./ExpensesList";
+import ExpensesChart from "./ExpensesChart";
 
 const Expenses = (props) => {
   // I want to have the state initialized with the actual year
@@ -22,6 +23,7 @@ const Expenses = (props) => {
     <li>
       <Card className="expenses">
         <ExpensesFilter selected={filteredYear} onFilterChange={filterByYear} />
+        <ExpensesChart expenses={filteredExpenses} />
         <ExpensesList expenses={filteredExpenses} />
       </Card>
     </li>

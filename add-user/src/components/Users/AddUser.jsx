@@ -34,7 +34,7 @@ const AddUser = (props) => {
     props.onAddUser(enteredName, enteredUserAge);
 
     // Rarelly do this, not recommented, it's just for course purpose
-    //Use ref just to read values not alternate
+    // Use ref just to read values not alternate
     nameInputRef.current.value = "";
     ageInputRef.current.value = "";
   };

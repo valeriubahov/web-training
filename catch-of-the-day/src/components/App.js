@@ -12,8 +12,6 @@ const App = (props) => {
   const [order, setOrder] = useState({});
 
   useEffect(() => {
-    console.log(1)
-
     const localStorageRef = localStorage.getItem(props.match.params.storeId);
 
     if (localStorageRef) {
@@ -29,7 +27,6 @@ const App = (props) => {
   }, []);
 
   useEffect(() => {
-    console.log(2)
     const ref = firebaseApp
       .database()
       .ref(`${props.match.params.storeId}/fishes`)

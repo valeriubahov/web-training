@@ -1,115 +1,108 @@
-import React from "react";
+import { useEffect, useState } from "react";
 import Header from "./Header";
 import Inventory from "./Inventory";
 import Order from "./Order";
 import sampleFishes from "../sample-fishes";
 import Fish from "./Fish";
-import { base } from "../base";
+import { firebaseApp } from "../base";
 import PropTypes from "prop-types";
 
-class App extends React.Component {
-  state = {
-    fishes: {},
-    order: {},
-  };
+const App = (props) => {
+  const [fishes, setFishes] = useState({});
+  const [order, setOrder] = useState({});
 
-  static propTypes = {
-    match: PropTypes.object,
-  };
+  useEffect(() => {
+    console.log(1)
 
-  componentDidMount() {
-    const localStorageRef = localStorage.getItem(
-      this.props.match.params.storeId
-    );
+    const localStorageRef = localStorage.getItem(props.match.params.storeId);
+
     if (localStorageRef) {
-      this.setState({ order: JSON.parse(localStorageRef) });
+      setOrder(JSON.parse(localStorageRef));
     }
-    this.ref = base.syncState(`${this.props.match.params.storeId}/fishes`, {
-      context: this,
-      state: "fishes",
+
+    firebaseApp
+      .database()
+      .ref(`${props.match.params.storeId}/fishes`)
+      .on("value", (snapshot) => {
+        if (snapshot.val()) setFishes(snapshot.val());
+      });
+  }, []);
+
+  useEffect(() => {
+    console.log(2)
+    const ref = firebaseApp
+      .database()
+      .ref(`${props.match.params.storeId}/fishes`)
+      .update(fishes);
+
+  }, [fishes]);
+
+  useEffect(() => {
+    localStorage.setItem(props.match.params.storeId, JSON.stringify(order));
+  }, [order]);
+
+  const addFish = (fish) => {
+    setFishes((prevState) => ({ ...prevState, [`fish${Date.now()}`]: fish }));
+  };
+
+  const updateFish = (key, updatedFish) => {
+    setFishes((prevState) => ({ ...prevState, [key]: updatedFish }));
+  };
+
+  const deleteFish = (key) => {
+    setFishes((prevState) => {
+      const copy = { ...prevState };
+      delete copy[key];
+      return copy;
     });
-  }
-
-  componentDidUpdate() {
-    localStorage.setItem(
-      this.props.match.params.storeId,
-      JSON.stringify(this.state.order)
-    );
-  }
-
-  componentWillUnmount() {
-    base.removeBinding(this.ref);
-  }
-
-  addFish = (fish) => {
-    const fishes = { ...this.state.fishes };
-    fishes[`fish${Date.now()}`] = fish;
-
-    this.setState({ fishes });
   };
 
-  updateFish = (key, updatedFish) => {
-    const fishes = { ...this.state.fishes };
-    fishes[key] = updatedFish;
-
-    this.setState({ fishes });
+  const loadSamplesFishes = () => {
+    setFishes(sampleFishes);
   };
 
-  deleteFish = (key) => {
-    const fishes = { ...this.state.fishes };
-    fishes[key] = null;
-
-    this.setState({ fishes });
+  const addToOrder = (key) => {
+    setOrder((prevState) => ({ ...prevState, [key]: prevState[key] + 1 || 1 }));
   };
 
-  loadSamplesFishes = () => {
-    this.setState({ fishes: sampleFishes });
+  const removeFromOrder = (key) => {
+    setOrder((prevState) => {
+      const copy = { ...prevState };
+      delete copy[key];
+      return copy;
+    });
   };
 
-  addToOrder = (key) => {
-    const order = { ...this.state.order };
-    order[key] = order[key] + 1 || 1;
-    this.setState({ order });
-  };
-
-  removeFromOrder = (key) => {
-    const order = { ...this.state.order };
-    delete order[key];
-    this.setState({ order });
-  };
-
-  render() {
-    return (
-      <div className="catch-of-the-day">
-        <div className="menu">
-          <Header tagline="Fresh Seafood Market" />
-          <ul className="fishes">
-            {Object.keys(this.state.fishes).map((key) => (
-              <Fish
-                key={key}
-                index={key}
-                details={this.state.fishes[key]}
-                addToOrder={this.addToOrder}
-              />
-            ))}
-          </ul>
-        </div>
-        <Order
-          fishes={this.state.fishes}
-          order={this.state.order}
-          removeFromOrder={this.removeFromOrder}
-        />
-        <Inventory
-          addFish={this.addFish}
-          updateFish={this.updateFish}
-          deleteFish={this.deleteFish}
-          loadSampleFishes={this.loadSamplesFishes}
-          fishes={this.state.fishes}
-          storeId={this.props.match.params.storeId}
-        />
+  return (
+    <div className="catch-of-the-day">
+      <div className="menu">
+        <Header tagline="Fresh Seafood Market" />
+        <ul className="fishes">
+          {Object.keys(fishes).map((key) => (
+            <Fish
+              key={key}
+              index={key}
+              details={fishes[key]}
+              addToOrder={addToOrder}
+            />
+          ))}
+        </ul>
       </div>
-    );
-  }
-}
+      <Order fishes={fishes} order={order} removeFromOrder={removeFromOrder} />
+      <Inventory
+        addFish={addFish}
+        updateFish={updateFish}
+        deleteFish={deleteFish}
+        loadSampleFishes={loadSamplesFishes}
+        fishes={fishes}
+        storeId={props.match.params.storeId}
+      />
+    </div>
+  );
+};
+
+App.propTypes = {
+  match: PropTypes.object,
+};
 
 export default App;

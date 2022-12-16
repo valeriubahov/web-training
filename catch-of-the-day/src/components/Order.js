@@ -3,15 +3,10 @@ import { formatPrice } from "../helpers";
 import { TransitionGroup, CSSTransition } from "react-transition-group";
 import PropTypes from "prop-types";
 
-class Order extends React.Component {
-  static propTypes = {
-    fishes: PropTypes.object,
-    order: PropTypes.object,
-    removeFromOrder: PropTypes.func,
-  };
-  renderOrder = (key) => {
-    const fish = this.props.fishes[key];
-    const count = this.props.order[key];
+const Order = (props) => {
+  const renderOrder = (key) => {
+    const fish = props.fishes[key];
+    const count = props.order[key];
     const isAvailable = fish && fish.status === "available";
     if (!fish) {
       return null;
@@ -50,40 +45,43 @@ class Order extends React.Component {
             </TransitionGroup>
             lbs {fish.name}
             {formatPrice(count * fish.price)}
-            <button onClick={() => this.props.removeFromOrder(key)}>
-              &times;
-            </button>
+            <button onClick={() => props.removeFromOrder(key)}>&times;</button>
           </span>
         </li>
       </CSSTransition>
     );
   };
-  render() {
-    const orderIds = Object.keys(this.props.order);
-    const total = orderIds.reduce((prevTotal, key) => {
-      const fish = this.props.fishes[key];
-      const count = this.props.order[key];
-      const isAvailable = fish && fish.status === "available";
 
-      if (isAvailable) {
-        return prevTotal + count * fish.price;
-      }
-      return prevTotal;
-    }, 0);
+  const orderIds = Object.keys(props.order);
+  const total = orderIds.reduce((prevTotal, key) => {
+    const fish = props.fishes[key];
+    const count = props.order[key];
+    const isAvailable = fish && fish.status === "available";
 
-    return (
-      <div className="order-wrap">
-        <h2>Order</h2>
-        <TransitionGroup component="ul" className="order">
-          {orderIds.map(this.renderOrder)}
-        </TransitionGroup>
+    if (isAvailable) {
+      return prevTotal + count * fish.price;
+    }
+    return prevTotal;
+  }, 0);
 
-        <div className="total">
-          <strong>{formatPrice(total)}</strong>
-        </div>
+  return (
+    <div className="order-wrap">
+      <h2>Order</h2>
+      <TransitionGroup component="ul" className="order">
+        {orderIds.map(renderOrder)}
+      </TransitionGroup>
+
+      <div className="total">
+        <strong>{formatPrice(total)}</strong>
       </div>
-    );
-  }
-}
+    </div>
+  );
+};
+
+Order.propTypes = {
+  fishes: PropTypes.object,
+  order: PropTypes.object,
+  removeFromOrder: PropTypes.func,
+};
 
 export default Order;

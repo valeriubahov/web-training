@@ -1,89 +1,87 @@
-import React from "react";
+import { useEffect, useState } from "react";
 import AddFishForm from "./AddFishForm";
 import EditFishForm from "./EditFishForm";
 import PropTypes from "prop-types";
 import Login from "./Login";
-import firebase from "firebase";
+import firebase from "firebase/app";
 import { base, firebaseApp } from "../base";
 
-class Inventory extends React.Component {
-  static propTypes = {
-    fishes: PropTypes.object,
-    updateFish: PropTypes.func,
-    deleteFish: PropTypes.func,
-    loadSampleFishes: PropTypes.func,
-  };
+const Inventory = (props) => {
+  const [logUser, setLogUser] = useState({ uid: null, owner: null });
 
-  state = {
-    uid: null,
-    owner: null,
-  };
-
-  componentDidMount() {
-    firebase.auth().onAuthStateChanged((user) => {
-      if (user) {
-        this.authHandler({ user });
-      }
-    });
-  }
-
-  authHandler = async (authData) => {
-    const store = await base.fetch(this.props.storeId, { context: this });
+  const authHandler = async (authData) => {
+    const store = await base.fetch(props.storeId, { context: {} });
     if (!store.owner) {
-      await base.post(`${this.props.storeId}/owner`, {
+      await base.post(`${props.storeId}/owner`, {
         data: authData.user.uid,
       });
     }
 
-    this.setState({
+    return {
       uid: authData.user.uid,
       owner: store.owner || authData.user.uid,
+    };
+  };
+
+  useEffect(() => {
+    firebase.auth().onAuthStateChanged((user) => {
+      if (user) {
+        authHandler({ user }).then((data) => setLogUser(data));
+      }
     });
-  };
-  authenticate = (provider) => {
+  }, []);
+
+  const authenticate = (provider) => {
     const authProvider = new firebase.auth[`${provider}AuthProvider`]();
-    firebaseApp.auth().signInWithPopup(authProvider).then(this.authHandler);
+    firebaseApp
+      .auth()
+      .signInWithPopup(authProvider)
+      .then(authHandler)
+      .then((data) => setLogUser(data));
   };
 
-  logout = async () => {
+  const logout = async () => {
     await firebase.auth().signOut();
-    this.setState({ uid: null });
+    setLogUser((prevUser) => ({ ...prevUser, uid: null }));
   };
 
-  render() {
-    const logout = <button onClick={this.logout}>Logout</button>;
+  const logoutButton = <button onClick={logout}>Logout</button>;
 
-    if (!this.state.uid) {
-      return <Login authenticate={this.authenticate} />;
-    }
-    if (this.state.uid !== this.state.owner) {
-      return (
-        <div>
-          <p>Sorry you are not the owner</p>
-          {logout}
-        </div>
-      );
-    }
+  if (!logUser.uid) {
+    return <Login authenticate={authenticate} />;
+  }
+  if (logUser.uid !== logUser.owner) {
     return (
-      <div className="inventory">
-        <h2>Inventory!</h2>
+      <div>
+        <p>Sorry you are not the owner</p>
         {logout}
-        {Object.keys(this.props.fishes).map((key) => (
-          <EditFishForm
-            key={key}
-            index={key}
-            fish={this.props.fishes[key]}
-            updateFish={this.props.updateFish}
-            deleteFish={this.props.deleteFish}
-          />
-        ))}
-        <AddFishForm addFish={this.props.addFish} />
-        <button onClick={this.props.loadSampleFishes}>
-          Load Sample Fishes
-        </button>
       </div>
     );
   }
-}
+  return (
+    <div className="inventory">
+      <h2>Inventory!</h2>
+      {logoutButton}
+      {Object.keys(props.fishes).map((key) => (
+        <EditFishForm
+          key={key}
+          index={key}
+          fish={props.fishes[key]}
+          updateFish={props.updateFish}
+          deleteFish={props.deleteFish}
+        />
+      ))}
+      <AddFishForm addFish={props.addFish} />
+      <button onClick={props.loadSampleFishes}>Load Sample Fishes</button>
+    </div>
+  );
+};
+
+Inventory.propTypes = {
+  fishes: PropTypes.object,
+  updateFish: PropTypes.func,
+  deleteFish: PropTypes.func,
+  loadSampleFishes: PropTypes.func,
+};
 
 export default Inventory;

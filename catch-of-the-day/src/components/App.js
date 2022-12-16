@@ -31,7 +31,6 @@ const App = (props) => {
       .database()
       .ref(`${props.match.params.storeId}/fishes`)
       .update(fishes);
-
   }, [fishes]);
 
   useEffect(() => {
@@ -49,7 +48,7 @@ const App = (props) => {
   const deleteFish = (key) => {
     setFishes((prevState) => {
       const copy = { ...prevState };
-      delete copy[key];
+      copy[key] = null;
       return copy;
     });
   };
@@ -75,14 +74,17 @@ const App = (props) => {
       <div className="menu">
         <Header tagline="Fresh Seafood Market" />
         <ul className="fishes">
-          {Object.keys(fishes).map((key) => (
-            <Fish
-              key={key}
-              index={key}
-              details={fishes[key]}
-              addToOrder={addToOrder}
-            />
-          ))}
+          {Object.keys(fishes).map(
+            (key) =>
+              fishes[key] && (
+                <Fish
+                  key={key}
+                  index={key}
+                  details={fishes[key]}
+                  addToOrder={addToOrder}
+                />
+              )
+          )}
         </ul>
       </div>
       <Order fishes={fishes} order={order} removeFromOrder={removeFromOrder} />

@@ -62,15 +62,18 @@ const Inventory = (props) => {
     <div className="inventory">
       <h2>Inventory!</h2>
       {logoutButton}
-      {Object.keys(props.fishes).map((key) => (
-        <EditFishForm
-          key={key}
-          index={key}
-          fish={props.fishes[key]}
-          updateFish={props.updateFish}
-          deleteFish={props.deleteFish}
-        />
-      ))}
+      {Object.keys(props.fishes).map(
+        (key) =>
+          props.fishes[key] && (
+            <EditFishForm
+              key={key}
+              index={key}
+              fish={props.fishes[key]}
+              updateFish={props.updateFish}
+              deleteFish={props.deleteFish}
+            />
+          )
+      )}
       <AddFishForm addFish={props.addFish} />
       <button onClick={props.loadSampleFishes}>Load Sample Fishes</button>
     </div>

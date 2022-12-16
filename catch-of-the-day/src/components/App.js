@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
-import Header from "./Header";
-import Inventory from "./Inventory";
-import Order from "./Order";
-import sampleFishes from "../../sample-fishes";
-import Fish from "../items/Fish";
-import { firebaseApp } from "../../base";
+import Header from "./UI/Header";
+import Inventory from "./UI/Inventory";
+import Order from "./UI/Order";
+import sampleFishes from "../sample-fishes";
+import Fish from "./items/Fish";
+import { firebaseApp } from "../base";
 import PropTypes from "prop-types";
 
 const App = (props) => {

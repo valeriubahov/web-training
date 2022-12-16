@@ -1,5 +1,5 @@
 import { BrowserRouter, Route, Switch } from "react-router-dom";
-import App from "../UI/App";
+import App from "../App";
 import NotFound from "../UI/NotFound";
 import StorePicker from "./StorePicker";
 

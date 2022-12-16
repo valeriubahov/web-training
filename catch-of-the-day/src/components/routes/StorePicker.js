@@ -1,5 +1,5 @@
 import { useRef } from "react";
-import { getFunName } from "../helpers";
+import { getFunName } from "../../helpers";
 import PropTypes from "prop-types";
 
 const StorePicker = (props) => {

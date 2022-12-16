@@ -1,6 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { formatPrice } from "../helpers";
+import { formatPrice } from "../../helpers";
 
 const Fish = (props) => {
   const handleClick = () => {

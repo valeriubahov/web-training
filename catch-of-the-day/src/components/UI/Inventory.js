@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
-import AddFishForm from "./AddFishForm";
-import EditFishForm from "./EditFishForm";
+import AddFishForm from "../items/AddFishForm";
+import EditFishForm from "../items/EditFishForm";
 import PropTypes from "prop-types";
 import Login from "./Login";
 import firebase from "firebase/app";
-import { base, firebaseApp } from "../base";
+import { base, firebaseApp } from "../../base";
 
 const Inventory = (props) => {
   const [logUser, setLogUser] = useState({ uid: null, owner: null });

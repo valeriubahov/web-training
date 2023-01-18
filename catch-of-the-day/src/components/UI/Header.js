@@ -1,17 +1,18 @@
 import React from "react";
 import PropTypes from "prop-types";
+import classes from "./Header.module.css";
 
 const Header = (props) => (
-  <header className="top">
+  <header className={classes.top}>
     <h1>
       Catch
-      <span className="ofThe">
-        <span className="of">Of</span>
-        <span className="The">The</span>
+      <span className={classes.ofThe}>
+        <span className={classes.of}>Of</span>
+        <span className={classes.The}>The</span>
       </span>
       Day
     </h1>
-    <h3 className="tagline">
+    <h3 className={classes.tagline}>
       <span>{props.tagline}</span>
     </h3>
   </header>

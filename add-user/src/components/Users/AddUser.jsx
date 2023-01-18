@@ -3,6 +3,7 @@ import Button from "../UI/Button";
 import Card from "../UI/Card";
 import Error from "../UI/Error";
 import classes from "./AddUser.module.css";
+import UseEffect from "./UseEffect";
 
 const AddUser = (props) => {
   const nameInputRef = useRef();
@@ -61,6 +62,8 @@ const AddUser = (props) => {
 
           <Button type="submit">Add User</Button>
         </form>
+        <UseEffect/>
+
       </Card>
     </>
   );

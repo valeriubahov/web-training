@@ -2,6 +2,7 @@ import React from "react";
 import { formatPrice } from "../../helpers";
 import { TransitionGroup, CSSTransition } from "react-transition-group";
 import PropTypes from "prop-types";
+import classes from "./Order.module.css";
 
 const Order = (props) => {
   const renderOrder = (key) => {
@@ -15,7 +16,7 @@ const Order = (props) => {
     if (!isAvailable) {
       return (
         <CSSTransition
-          classNames="order"
+          classNames={classes.order}
           key={key}
           timeout={{ enter: 500, exit: 500 }}
         >
@@ -28,15 +29,15 @@ const Order = (props) => {
 
     return (
       <CSSTransition
-        classNames="order"
+        classNames={classes.order}
         key={key}
         timeout={{ enter: 500, exit: 500 }}
       >
         <li key={key}>
           <span>
-            <TransitionGroup component="span" className="count">
+            <TransitionGroup component="span" className={classes.count}>
               <CSSTransition
-                classNames="count"
+                classNames={classes.count}
                 key={count}
                 timeout={{ enter: 500, exit: 500 }}
               >
@@ -67,11 +68,11 @@ const Order = (props) => {
   return (
     <div className="order-wrap">
       <h2>Order</h2>
-      <TransitionGroup component="ul" className="order">
+      <TransitionGroup component="ul" className={classes.order}>
         {orderIds.map(renderOrder)}
       </TransitionGroup>
 
-      <div className="total">
+      <div className={classes.total}>
         <strong>{formatPrice(total)}</strong>
       </div>
     </div>

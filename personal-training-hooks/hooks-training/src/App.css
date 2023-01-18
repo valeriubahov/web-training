@@ -1,0 +1,39 @@
+.App {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+.form-test {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 300px;
+}
+
+.section {
+  background-color: bisque;
+  padding: 1rem;
+  margin: 1rem;
+  border-radius: 30px;
+}
+label {
+  padding-bottom: 10px;
+  padding-top: 10px;
+  width: 100%;
+  text-align: center;
+}
+
+button {
+  margin: 1rem;
+  width: 100%;
+  border-radius: 15px;
+}
+
+input {
+  width: 100%;
+  text-align: center;
+}
